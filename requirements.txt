@@ -4,4 +4,3 @@ plotly==5.9.0
 scikit_learn==1.1.2
 seaborn==0.11.2
 streamlit==1.13.0
-xlsx<2.0
