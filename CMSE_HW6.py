@@ -5,7 +5,7 @@ from sklearn.preprocessing import MinMaxScaler
 #import altair as alt
 import plotly.express as px
 import matplotlib.pyplot as plt
-import numpy as np ####!
+import numpy as np
 
 # -----Title of  the dashborad
 st.title('Default Rate and Macroeconomic Indicators')
