@@ -104,7 +104,7 @@ data_scaled = data[['DEFAULT_RATE','S&P','NASDAQ','CPI','PPI','MORTGAGE_RATE','U
 fig_cor, ax = plt.subplots(figsize=(12,5))
 mask = np.triu(np.ones_like(data_scaled.corr()))
 sns.color_palette("vlag", as_cmap=True)
-sns.heatmap(data_scaled.corr(), ax=ax, annot=True, cmap="vlag",mask=mask)
+sns.heatmap(data_scaled.corr(), ax=ax, annot=True, cmap="vlag_r",mask=mask)
 
 if checkbox_2:
     st.write(fig_cor)
