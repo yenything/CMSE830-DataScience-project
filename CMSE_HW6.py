@@ -183,4 +183,4 @@ with col3:
     st.markdown('Correlation Value X3:')
     st.write(corr_val)
 
-st.markdown('Regardless whether it is in the recession period or not, **1. inflation rate, 2. unemployment rate, and 3. import price index** are the selected indicators that need to be carefully moniotred in the future!')
+st.markdown('Whether it is the recession period or not, **1. inflation rate, 2. unemployment rate, and 3. import price index** are the selected indicators that need to be carefully moniotred in the future!')
