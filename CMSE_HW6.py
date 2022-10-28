@@ -7,8 +7,12 @@ import plotly.express as px
 import matplotlib.pyplot as plt
 import numpy as np
 
-# -----Title of  the dashborad
+# -----Title of the dashborad
 st.title('Default Rate and Macroeconomic Indicators')
+
+# -----Description of the project
+st.markdown('Do you want to identify the most affected macroeconomic indicators during past global economic recessions? In this web application, I will guide financial institutions to manage their *credit risk (the risk of default on a debt that may arise from a borrower failing to pay their loan)* for the upcoming crisis by focusing on only selective indices among myriads of variables.')
+st.markdown('---')
 
 # -----Read CSV or Excel file and load data
 #@st.cache
@@ -61,12 +65,13 @@ if checkbox_1:
     st.dataframe(data=data)
 
 # -----Trend line - default rate data with macroeconomic indicators
-st.subheader('Time-Series Chart')
-st.caption('Explore historical trend of default rate and economic index. You can compare any variable ')
+#st.subheader('[Step One] Time-Series Chart')
+st.subheader('Step 1 - Explore historical trend of economic indicators and default rate of companies in the United States.')
+#st.markdown('Explore historical trend of economic indicators and default rate of companies in the United States.')
 
 # -----Draw line graph with original columns
 select_box1 = st.multiselect(label = "1. Original Index", options = original_columns)
-st.caption('Select multi-variables under the Original Index.') 
+st.caption('Select multi-variables under the Original Index.')
 data_original = data[select_box1]
 fig_org = px.line(data_original)
 fig_org.add_vrect(x0="2007-12",x1="2009-06",fillcolor="gray",opacity=0.30,line_width=0,
@@ -78,6 +83,8 @@ fig_org.add_vrect(x0="2020-02",x1="2020-04",fillcolor="gray",opacity=0.30,line_w
 fig_org.update_layout(autosize=False,width=700,height=500)
 fig_org.update_layout(legend=dict(orientation="h",yanchor="bottom",y=-0.2,xanchor="right",x=1))
 st.write(fig_org)
+st.markdown(' If you do not want to see flatten lines, try the next graph with scaled dataset! It will keep the fluctuations of the lines regardless of variables you choose.')
+st.markdown('---')
 
 # -----Draw line graph with scaled columns
 select_box2 = st.multiselect(label = "2. Scaled Index", options = scaled_columns)
@@ -93,61 +100,87 @@ fig_scl.add_vrect(x0="2020-02",x1="2020-04",fillcolor="gray",opacity=0.30,line_w
 fig_scl.update_layout(autosize=False,width=700,height=500)
 fig_scl.update_layout(legend=dict(orientation="h",yanchor="bottom",y=-0.2,xanchor="right",x=1)) 
 st.write(fig_scl)
-
+st.markdown('Try to focus on the gray boxes. These are the period when the recession happened during the past two decades. Do you see any value that skyrocketed or suddenly dropped?')
+st.markdown('My findings:')
+st.markdown('1. The **default rate** increased right after the recessions. \n 2. The stock prices **(S&P and NASDAQ)** and the **GDP** decreased during the recession but, eventually they went upward. \n 3. **The consumer price index (CPI) and the producers purchase index (PPI)** made little peaks during the great recession. There are no significant changes during the COVID-19 recession. \n 4. The **mortgage rate and the corporate bond yield rate** fluctuated a lot. And they are moving in the same direction. \n 5. The pattern of **unemployment rate** is similar to the pattern of the default rate. \n 6. The pattern of **inflation rate** is similar to the pattern of **import price index**. \n 7. The **disposable income** soared right after COVID-19.')
+st.markdown('---')
 
 # -----Correlation betweeen Default Rate and Macroeconomic index
 # ------Correlation values are same when using scaled indices!
-st.subheader('Correlation Matrix and Chart')
 
-checkbox_2 = st.checkbox("Reveal the correlation matrix")
-data_scaled = data[['DEFAULT_RATE','S&P','NASDAQ','CPI','PPI','MORTGAGE_RATE','UNEMPLOYMENT_RATE','INFLATION_RATE','DISPOSABLE_INCOME','QUARTERLY_REAL_GDP','CORP_BONDYIELD_RATE','IMPORT_PRICE_INDEX']]
+st.subheader('Step2 - Analyze the relationship between the default rate and various indicators.')
+# st.subheader('Correlation Matrix and Chart')
+
+# ------ filtering dataframe: recession=Y/N
+recession_options = sorted(data['RECESSION'].unique())
+selected_recession_option = st.multiselect('Recession period:',recession_options)
+data_recession_yn = data[ (data['RECESSION'].isin(selected_recession_option))]
+#st.dataframe(data_recession_yn)
+st.caption('Click both Y and N to analyze the correlation for entire period.')
+
+data_corr = data_recession_yn[['DEFAULT_RATE','S&P','NASDAQ','CPI','PPI','MORTGAGE_RATE','UNEMPLOYMENT_RATE','INFLATION_RATE','DISPOSABLE_INCOME','QUARTERLY_REAL_GDP','CORP_BONDYIELD_RATE','IMPORT_PRICE_INDEX']]
 fig_cor, ax = plt.subplots(figsize=(12,5))
-mask = np.triu(np.ones_like(data_scaled.corr()))
+mask = np.triu(np.ones_like(data_corr.corr()))
 sns.color_palette("vlag", as_cmap=True)
-sns.heatmap(data_scaled.corr(), ax=ax, annot=True, cmap="vlag_r",mask=mask)
+data_corr_2 = data_corr.corr()
+sns.heatmap(data_corr_2, ax=ax, annot=True, cmap="vlag_r",mask=mask)
+st.write(fig_cor)
 
-if checkbox_2:
-    st.write(fig_cor)
+st.markdown('Are these correlation values what you expected from the previous step?')
+st.markdown('---')
 
-st.caption('Select one variable to check the relation between Default Rate and each variable.')    
+# ----------- Step 3
+st.subheader('Step3 - Select the top three indicators that might be carefully monitored in the future.')
+st.caption('')    
 
-col3, col4, col5 = st.columns(3)
+col1, col2, col3 = st.columns(3)
 
-with col3:
-    select_box1 = st.selectbox(label = "X1 axis", options = original_columns)
-    fig_3 = sns.lmplot(x=select_box1, y='DEFAULT_RATE', data=data, lowess=False, palette="Set1")
+with col1:
+    select_box_setting = data_corr_2.abs().sort_values(by='DEFAULT_RATE', axis=1,ascending=False).iloc[0:1, 1:2].columns
+    column_list = ['DEFAULT_RATE','S&P','NASDAQ','CPI','PPI','MORTGAGE_RATE','UNEMPLOYMENT_RATE','INFLATION_RATE','DISPOSABLE_INCOME','QUARTERLY_REAL_GDP','CORP_BONDYIELD_RATE','IMPORT_PRICE_INDEX']
+    select_box1 = st.selectbox("X1 axis", original_columns, index=column_list.index(select_box_setting))
+    fig_1 = sns.lmplot(x=select_box1, y='DEFAULT_RATE', data=data_recession_yn, lowess=False, palette="Set1")
     plt.xlabel(select_box1, fontsize=17)
     plt.ylabel('Default Rate', fontsize=17)
-    st.pyplot(fig_3)
+    plt.tick_params(left = False , labelleft = False , labelbottom = False, bottom = False)
+    st.pyplot(fig_1)
     
-    corr = data[['DEFAULT_RATE', select_box1]].corr()
+    corr = data_corr[['DEFAULT_RATE', select_box1]].corr()
     corr = np.round(corr,decimals=4)
     corr_val=corr.iat[0, 1]
     st.markdown('Correlation Value X1:')
     st.write(corr_val)
 
-with col4:
-    select_box1 = st.selectbox(label = "X2 axis", options = original_columns)
-    fig_4 = sns.lmplot(x=select_box1, y='DEFAULT_RATE', data=data, lowess=False, palette="Set1")
+with col2:
+    select_box_setting = data_corr_2.abs().sort_values(by='DEFAULT_RATE', axis=1,ascending=False).iloc[0:1, 2:3].columns
+    column_list = ['DEFAULT_RATE','S&P','NASDAQ','CPI','PPI','MORTGAGE_RATE','UNEMPLOYMENT_RATE','INFLATION_RATE','DISPOSABLE_INCOME','QUARTERLY_REAL_GDP','CORP_BONDYIELD_RATE','IMPORT_PRICE_INDEX']
+    select_box1 = st.selectbox("X2 axis", original_columns, index=column_list.index(select_box_setting))
+    fig_2 = sns.lmplot(x=select_box1, y='DEFAULT_RATE', data=data_recession_yn, lowess=False, palette="Set1")
     plt.xlabel(select_box1, fontsize=17)
     plt.ylabel(' ', fontsize=17)    
-    st.pyplot(fig_4)
+    plt.tick_params(left = False , labelleft = False , labelbottom = False, bottom = False)
+    st.pyplot(fig_2)
 
-    corr = data[['DEFAULT_RATE', select_box1]].corr()
+    corr = data_corr[['DEFAULT_RATE', select_box1]].corr()
     corr = np.round(corr,decimals=4)
     corr_val=corr.iat[0, 1]
     st.markdown('Correlation Value X2:')
     st.write(corr_val)
 
-with col5:
-    select_box1 = st.selectbox(label = "X3 axis", options = original_columns)
-    fig_5 = sns.lmplot(x=select_box1, y='DEFAULT_RATE', data=data, lowess=False, palette="Set1")
+with col3:
+    select_box_setting = data_corr_2.abs().sort_values(by='DEFAULT_RATE', axis=1,ascending=False).iloc[0:1, 3:4].columns
+    column_list = ['DEFAULT_RATE','S&P','NASDAQ','CPI','PPI','MORTGAGE_RATE','UNEMPLOYMENT_RATE','INFLATION_RATE','DISPOSABLE_INCOME','QUARTERLY_REAL_GDP','CORP_BONDYIELD_RATE','IMPORT_PRICE_INDEX']    
+    select_box1 = st.selectbox("X3 axis", original_columns, index=column_list.index(select_box_setting))
+    fig_3 = sns.lmplot(x=select_box1, y='DEFAULT_RATE', data=data_recession_yn, lowess=False, palette="Set1")
     plt.xlabel(select_box1, fontsize=17)
-    plt.ylabel(' ', fontsize=17)    
-    st.pyplot(fig_5)    
+    plt.ylabel(' ', fontsize=17)  
+    plt.tick_params(left = False , labelleft = False , labelbottom = False, bottom = False)      
+    st.pyplot(fig_3)    
 
-    corr = data[['DEFAULT_RATE', select_box1]].corr()
+    corr = data_corr[['DEFAULT_RATE', select_box1]].corr()
     corr = np.round(corr,decimals=4)
     corr_val=corr.iat[0, 1]
     st.markdown('Correlation Value X3:')
     st.write(corr_val)
+
+st.markdown('Regardless whether it is in the recession period or not, **1. inflation rate, 2. unemployment rate, and 3. import price index** are the selected indicators that need to be carefully moniotred in the future!')
