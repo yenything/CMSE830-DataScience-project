@@ -11,7 +11,7 @@ import numpy as np
 st.title('Default Rate and Macroeconomic Indicators')
 
 # -----Description of the project
-st.markdown('Do you want to identify the most affected macroeconomic indicators during past global economic recessions? In this web application, I will guide financial institutions to manage their *credit risk (the risk of default on a debt that may arise from a borrower failing to pay their loan)* for the upcoming crisis by focusing on only selective indices among myriads of variables.')
+st.markdown('Are you interested in identifying the macroeconomic indicators most affected by past global economic recessions? With this web application, I will guide financial institutions in managing their credit risk (the risk of default on a debt that may arise from a borrower failing to pay their loan) during future crises by focusing on select indices from among the many variables available.')
 st.markdown('---')
 
 # -----Read CSV or Excel file and load data
@@ -83,7 +83,7 @@ fig_org.add_vrect(x0="2020-02",x1="2020-04",fillcolor="gray",opacity=0.30,line_w
 fig_org.update_layout(autosize=False,width=700,height=500)
 fig_org.update_layout(legend=dict(orientation="h",yanchor="bottom",y=-0.2,xanchor="right",x=1))
 st.write(fig_org)
-st.markdown(' If you do not want to see flatten lines, try the next graph with scaled dataset! It will keep the fluctuations of the lines regardless of variables you choose.')
+st.markdown('If you do not want to see flattened lines, try the next graph with a scaled dataset! This will maintain the fluctuations of the lines, regardless of the variables you choose.')
 st.markdown('---')
 
 # -----Draw line graph with scaled columns
@@ -100,9 +100,9 @@ fig_scl.add_vrect(x0="2020-02",x1="2020-04",fillcolor="gray",opacity=0.30,line_w
 fig_scl.update_layout(autosize=False,width=700,height=500)
 fig_scl.update_layout(legend=dict(orientation="h",yanchor="bottom",y=-0.2,xanchor="right",x=1)) 
 st.write(fig_scl)
-st.markdown('Try to focus on the gray boxes. These are the period when the recession happened during the past two decades. Do you see any value that skyrocketed or suddenly dropped?')
-st.markdown('My findings:')
-st.markdown('1. The **default rate** increased right after the recessions. \n 2. The stock prices **(S&P and NASDAQ)** and the **GDP** decreased during the recession but, eventually they went upward. \n 3. **The consumer price index (CPI) and the producers purchase index (PPI)** made little peaks during the great recession. There are no significant changes during the COVID-19 recession. \n 4. The **mortgage rate and the corporate bond yield rate** fluctuated a lot. And they are moving in the same direction. \n 5. The pattern of **unemployment rate** is similar to the pattern of the default rate. \n 6. The pattern of **inflation rate** is similar to the pattern of **import price index**. \n 7. The **disposable income** soared right after COVID-19.')
+st.markdown('Please focus on the gray boxes, which represent the periods of recession over the past two decades. Do you see any values that skyrocketed or suddenly dropped?')
+st.markdown('Here are my findings:')
+st.markdown('1. The **default rate** increased right after the recessions. \n 2. During the recessions, stock prices **(S&P and NASDAQ)** and **GDP** decreased, but eventually they rose again. \n 3. **The consumer price index (CPI) and the producers purchase index (PPI)** peaked slightly during the Great Recession, but there were no significant changes during the COVID-19 recession.\n 4. The **mortgage rate and the corporate bond yield rate** fluctuated significantly, and they moved in the same direction. \n 5. The pattern of **unemployment rate** is similar to that of the default rate. \n 6. The pattern of **inflation rate** is similar to that of **import price index**. \n 7. **Disposable income** soared right after COVID-19.')
 st.markdown('---')
 
 # -----Correlation betweeen Default Rate and Macroeconomic index
@@ -183,4 +183,4 @@ with col3:
     st.markdown('Correlation Value X3:')
     st.write(corr_val)
 
-st.markdown('Whether it is the recession period or not, **1. inflation rate, 2. unemployment rate, and 3. import price index** are the selected indicators that need to be carefully moniotred in the future!')
+st.markdown('Whether it is a recession period or not, three indicators need to be carefully monitored in the future: 1) inflation rate, 2) unemployment rate, and 3) import price index.')
